@@ -71,7 +71,7 @@ def load_share(share, net, peer_addr):
     else:
         raise ValueError('unknown share type: %r' % (share['type'],))
 
-DONATION_SCRIPT = '4104ffd03de44a6e11b9917f3a29f9443283d9871c9d743ef30d5eddcd37094b64d1b3d8090496b53256786bf5c82932ec23c3b74d9f05a6f95a8b5529352656664bac'.decode('hex')
+DONATION_SCRIPT = '410421f79622aa4d25999ef2f9cb580e04b8fdc7987f6fd92a9e830b48dd7a24d11b42857a5e256d8d1345cf55df672acd4c2f204473572da5e5516aa35454ef4d31ac'.decode('hex')
 
 class Share(object):
     VERSION = 13
@@ -84,6 +84,8 @@ class Share(object):
         ('timestamp', pack.IntType(32)),
         ('bits', bitcoin_data.FloatingIntegerType()),
         ('nonce', pack.IntType(32)),
+        ('birthdayA', pack.IntType(32)),
+        ('birthdayB', pack.IntType(32)),
     ])
     
     share_info_type = pack.ComposedType([

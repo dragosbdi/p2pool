@@ -1,0 +1,1 @@
+./run_p2pool.py --net bitcredit --bitcoind-config-path /path/to/bitcredits.conf --fee 1.0 --debug
