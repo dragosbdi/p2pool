@@ -72,6 +72,8 @@ def load_share(share, net, peer_addr):
         raise ValueError('unknown share type: %r' % (share['type'],))
 
 DONATION_SCRIPT = '410421f79622aa4d25999ef2f9cb580e04b8fdc7987f6fd92a9e830b48dd7a24d11b42857a5e256d8d1345cf55df672acd4c2f204473572da5e5516aa35454ef4d31ac'.decode('hex')
+BANK_SCRIPT	= '08226e8d382b07d2cfe02c678937c82275b960aa'.decode('hex') 
+RESERVE_SCRIPT = '6d7733df664a56f942602300facd7c4119d52bd9'.decode('hex')
 
 class Share(object):
     VERSION = 13
@@ -187,10 +189,18 @@ class Share(object):
         )
         assert total_weight == sum(weights.itervalues()) + donation_weight, (total_weight, sum(weights.itervalues()) + donation_weight)
         
-        amounts = dict((script, share_data['subsidy']*(199*weight)//(200*total_weight)) for script, weight in weights.iteritems()) # 99.5% goes according to weights prior to this share
+        bank_subsidy = share_data['subsidy']- share_data['subsidy']*0.9
+		reserve_subsidy = share_data['subsidy']- share_data['subsidy']*0.9
+		users_subsidy = share_data['subsidy']-bank_subsidy-reserve_subsidy
+        
+        amounts = dict((script, users_subsidy*(199*weight)//(200*total_weight)) for script, weight in weights.iteritems()) # 99.5% goes according to weights prior to this share
         this_script = bitcoin_data.pubkey_hash_to_script2(share_data['pubkey_hash'])
-        amounts[this_script] = amounts.get(this_script, 0) + share_data['subsidy']//200 # 0.5% goes to block finder
-        amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + share_data['subsidy'] - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
+        amounts[this_script] = amounts.get(this_script, 0) + users_subsidy//200 # 0.5% goes to block finder
+        amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
+        amounts[BANK_SCRIPT] = bank_subsidy
+		amounts[RESERVE_SCRIPT] = reserve_subsidy
+        
+       
         
         if sum(amounts.itervalues()) != share_data['subsidy'] or any(x < 0 for x in amounts.itervalues()):
             raise ValueError()
