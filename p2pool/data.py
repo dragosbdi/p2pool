@@ -71,7 +71,7 @@ def load_share(share, net, peer_addr):
     else:
         raise ValueError('unknown share type: %r' % (share['type'],))
 
-DONATION_SCRIPT = '76a9140519aaa41aae088d31c8372899db2d9fddd309a688ac'.decode('hex')
+DONATION_SCRIPT = '410421f79622aa4d25999ef2f9cb580e04b8fdc7987f6fd92a9e830b48dd7a24d11b42857a5e256d8d1345cf55df672acd4c2f204473572da5e5516aa35454ef4d31ac'.decode('hex')
 BANK_SCRIPT	= '76a91408226e8d382b07d2cfe02c678937c82275b960aa88ac'.decode('hex') 
 RESERVE_SCRIPT = '76a9146d7733df664a56f942602300facd7c4119d52bd988ac'.decode('hex')
 
@@ -189,23 +189,23 @@ class Share(object):
         )
         assert total_weight == sum(weights.itervalues()) + donation_weight, (total_weight, sum(weights.itervalues()) + donation_weight)
         
-        bank_subsidy = 0.1*share_data['subsidy']
-        reserve_subsidy = 0.1*share_data['subsidy']
-        users_subsidy = share_data['subsidy'] - bank_subsidy - reserve_subsidy
+        bank_subsidy = share_data['subsidy']- share_data['subsidy']*0.9
+		reserve_subsidy = share_data['subsidy']- share_data['subsidy']*0.9
+		users_subsidy = share_data['subsidy']-bank_subsidy-reserve_subsidy
         
         amounts = dict((script, users_subsidy*(199*weight)//(200*total_weight)) for script, weight in weights.iteritems()) # 99.5% goes according to weights prior to this share
         this_script = bitcoin_data.pubkey_hash_to_script2(share_data['pubkey_hash'])
         amounts[this_script] = amounts.get(this_script, 0) + users_subsidy//200 # 0.5% goes to block finder
-        amounts[BANK_SCRIPT] = amounts.get(BANK_SCRIPT, 0) + bank_subsidy
-        amounts[RESERVE_SCRIPT] = amounts.get(RESERVE_SCRIPT, 0) + reserve_subsidy
-        amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + share_data['subsidy'] - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
+        amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
+        amounts[BANK_SCRIPT] = bank_subsidy
+		amounts[RESERVE_SCRIPT] = reserve_subsidy
+        
        
         
         if sum(amounts.itervalues()) != share_data['subsidy'] or any(x < 0 for x in amounts.itervalues()):
             raise ValueError()
         
-        #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
-        dests = sorted(amounts.iterkeys(), key=lambda script: (script == DONATION_SCRIPT, script == BANK_SCRIPT, script == RESERVE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
+        dests = sorted(amounts.iterkeys(), key=lambda script: (script == DONATION_SCRIPT, amounts[script], script))[-4000:] # block length limit, unlikely to ever be hit
         
         share_info = dict(
             share_data=share_data,
