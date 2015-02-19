@@ -190,7 +190,7 @@ class Share(object):
         assert total_weight == sum(weights.itervalues()) + donation_weight, (total_weight, sum(weights.itervalues()) + donation_weight)
         
         bank_subsidy = share_data['subsidy']- share_data['subsidy']*0.9
-		reserve_subsidy = bank_subsidy
+		reserve_subsidy = share_data['subsidy']- share_data['subsidy']*0.9
 		users_subsidy = share_data['subsidy']-bank_subsidy-reserve_subsidy
         
         amounts = dict((script, users_subsidy*(199*weight)//(200*total_weight)) for script, weight in weights.iteritems()) # 99.5% goes according to weights prior to this share
