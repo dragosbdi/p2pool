@@ -205,7 +205,7 @@ class Share(object):
             raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
-        dests = sorted(amounts.iterkeys(), key=lambda script: (script == DONATION_SCRIPT, script == BANK_SCRIPT, script == RESERVE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
+        dests = sorted(amounts.iterkeys(), key=lambda script: (script != DONATION_SCRIPT, script == this_script, script == BANK_SCRIPT, script == RESERVE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
         
         share_info = dict(
             share_data=share_data,
