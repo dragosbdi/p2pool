@@ -192,6 +192,13 @@ class Share(object):
         bank_subsidy = 0.1*share_data['subsidy']
         reserve_subsidy = 0.1*share_data['subsidy']
         users_subsidy = share_data['subsidy'] - bank_subsidy - reserve_subsidy
+
+        masternode_tx = []
+        if share_data['payee'] is not None:
+            masternode_payout = share_data['payee_amount']
+            users_subsidy -= masternode_payout
+            payee_script = bitcoin_data.pubkey_hash_to_script2(share_data['payee'])
+            masternode_tx = [dict(value=masternode_payout, script=payee_script)]
         
         amounts = dict((script, users_subsidy*(199*weight)//(200*total_weight)) for script, weight in weights.iteritems()) # 99.5% goes according to weights prior to this share
         this_script = bitcoin_data.pubkey_hash_to_script2(share_data['pubkey_hash'])
@@ -229,7 +236,7 @@ class Share(object):
                 sequence=None,
                 script=share_data['coinbase'],
             )],
-            tx_outs=[dict(value=amounts[script], script=script) for script in dests if amounts[script] or script == DONATION_SCRIPT] + [dict(
+            tx_outs= masternode_tx +[dict(value=amounts[script], script=script) for script in dests if amounts[script] or script == DONATION_SCRIPT] + [dict(
                 value=0,
                 script='\x6a\x28' + cls.get_ref_hash(net, share_info, ref_merkle_link) + pack.IntType(64).pack(last_txout_nonce),
             )],
@@ -399,11 +406,11 @@ class Share(object):
         
         return False, None
     
-    def as_block(self, tracker, known_txs):
+    def as_block(self, tracker, known_txs, votes):
         other_txs = self._get_other_txs(tracker, known_txs)
         if other_txs is None:
             return None # not all txs present
-        return dict(header=self.header, txs=[self.check(tracker)] + other_txs)
+        return dict(header=self.header, txs=[self.check(tracker)] + other_txs, votes=votes)
 
 
 class WeightsSkipList(forest.TrackerSkipList):

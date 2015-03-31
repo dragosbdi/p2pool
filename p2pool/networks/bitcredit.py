@@ -21,5 +21,5 @@ PERSIST = True
 WORKER_PORT = 8776
 BOOTSTRAP_ADDRS = ''.split(' ')
 ANNOUNCE_CHANNEL = '#p2pool-bcr'
-VERSION_CHECK = lambda v: 300700 <= v
-VERSION_WARNING = lambda v: 'Upgrade Bitcredit to >=0.30.7!' if v < 300700 else None
+VERSION_CHECK = lambda v: 301700 <= v
+VERSION_WARNING = lambda v: 'Upgrade Bitcredit to >=0.30.17!' if v < 301700 else None
