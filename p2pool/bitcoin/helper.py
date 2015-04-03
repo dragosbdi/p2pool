@@ -59,7 +59,7 @@ def getwork(bitcoind, use_getblocktemplate=False):
         use_getblocktemplate=use_getblocktemplate,
         latency=end - start,
         votes=map(bitcoin_data.vote_type.unpack, packed_votes),
-        payee=bitcoin_data.address_to_pubkey_hash(work['payee'], self.node.net.PARENT) if (work['payee'] != '') else None,
+        payee=bitcoin_data.address_to_pubkey_hash(work['payee'], net.PARENT) if (work['payee'] != '') else None,
         payee_amount=work['payee_amount'] if (work['payee_amount'] != '') else work['coinbasevalue'] / 5,
         masternode_payments=work['masternode_payments'],
     ))
