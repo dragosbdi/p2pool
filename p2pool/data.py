@@ -219,7 +219,7 @@ class Share(object):
         amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
 
         print 'sum amounts (amounts %s)' % (sum(amounts.itervalues()))
-        print 'share_data (share_data %s)' % (share_data['subsidy'])
+        print 'users_subsidy (users_subsidy %s)' % (users_subsidy)
                      
         if sum(amounts.itervalues()) != users_subsidy or any(x < 0 for x in amounts.itervalues()):
             raise ValueError()
