@@ -14,7 +14,7 @@ def check(bitcoind, net):
         print >>sys.stderr, "    Check failed! Make sure that you're connected to the right bitcoind with --bitcoind-rpc-port!"
         raise deferral.RetrySilentlyException()
     if not net.VERSION_CHECK((yield bitcoind.rpc_getinfo())['version']):
-        print >>sys.stderr, '    Bitcoin version too old! Upgrade to 0.6.4 or newer!'
+        print >>sys.stderr, '    Bitcredit version too old! Upgrade to 0.30.16.4 or newer!'
         raise deferral.RetrySilentlyException()
 
 @deferral.retry('Error getting work from bitcoind:', 3)
@@ -36,7 +36,7 @@ def getwork(bitcoind, net, use_getblocktemplate=False):
             work = yield go()
             end = time.time()
         except jsonrpc.Error_for_code(-32601): # Method not found
-            print >>sys.stderr, 'Error: Bitcoin version too old! Upgrade to v0.5 or newer!'
+            print >>sys.stderr, 'Error: Bitcoin version too old! Upgrade to 0.30.16.4 or newer!'
             raise deferral.RetrySilentlyException()
     packed_transactions = [(x['data'] if isinstance(x, dict) else x).decode('hex') for x in work['transactions']]
     packed_votes = [(x['data'] if isinstance(x, dict) else x).decode('hex') for x in work['votes']]
