@@ -221,7 +221,7 @@ class Share(object):
         print 'sum amounts (amounts %s)' % (sum(amounts.itervalues()))
         print 'share_data (share_data %s)' % (share_data['subsidy'])
                      
-        if sum(amounts.itervalues()) != share_data['subsidy'] or any(x < 0 for x in amounts.itervalues()):
+        if sum(amounts.itervalues()) != users_subsidy or any(x < 0 for x in amounts.itervalues()):
             raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
