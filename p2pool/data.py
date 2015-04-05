@@ -217,14 +217,18 @@ class Share(object):
             amounts[PAYEE_SCRIPT] = amounts.get(PAYEE_SCRIPT, 0) + masternode_payout
 
         amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
-
-        print 'sum amounts (amounts %s)' % (sum(amounts.itervalues()))
+		
+		print 'sum amounts (amounts %s)' % (sum(amounts.itervalues()))
         print 'users_subsidy (users_subsidy %s)' % (users_subsidy)
-        
-        print ' amount (amount %s)' % any(x for x in amounts.itervalues())
-                     
-        if sum(amounts.itervalues()) != users_subsidy or any(x < 0 for x in amounts.itervalues()):
-            raise ValueError()
+
+        print ' amount (amount %s)' % any(x < 0 for x in amounts.itervalues())
+        print ' sum_validation (result %s)' % (sum(amounts.itervalues()) != users_subsidy)
+
+        for ax in amounts:
+        print (ax,':',amounts[ax])
+
+        if (sum(amounts.itervalues()) != users_subsidy) or any(x < 0 for x in amounts.itervalues()):
+             raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
         if share_data['payee'] is not None:
@@ -248,7 +252,7 @@ class Share(object):
         )
         
         gentx = dict(
-            version=1,
+            version=2,
             tx_ins=[dict(
                 previous_output=None,
                 sequence=None,
