@@ -207,10 +207,10 @@ class Share(object):
         amounts[this_script] = amounts.get(this_script, 0) + users_subsidy//200 # 0.5% goes to block finder
         amounts[BANK_SCRIPT] = amounts.get(BANK_SCRIPT, 0) + bank_subsidy
         amounts[RESERVE_SCRIPT] = amounts.get(RESERVE_SCRIPT, 0) + reserve_subsidy
-        amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + share_data['subsidy'] - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
+        amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
        
         
-        if sum(amounts.itervalues()) != share_data['subsidy'] or any(x < 0 for x in amounts.itervalues()):
+        if sum(amounts.itervalues()) != users_subsidy or any(x < 0 for x in amounts.itervalues()):
             raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
