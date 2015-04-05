@@ -75,9 +75,6 @@ DONATION_SCRIPT = '410421f79622aa4d25999ef2f9cb580e04b8fdc7987f6fd92a9e830b48dd7
 BANK_SCRIPT	= '76a91408226e8d382b07d2cfe02c678937c82275b960aa88ac'.decode('hex') 
 RESERVE_SCRIPT = '76a9146d7733df664a56f942602300facd7c4119d52bd988ac'.decode('hex')
 
-if share_data['payee'] is not None:
-	PAYEE_SCRIPT =bitcoin_data.pubkey_hash_to_script2(share_data['payee'])
-
 class Share(object):
     VERSION = 13
     VOTING_VERSION = 13
@@ -194,8 +191,11 @@ class Share(object):
         )
         assert total_weight == sum(weights.itervalues()) + donation_weight, (total_weight, sum(weights.itervalues()) + donation_weight)
 
+ 
+
         if share_data['payee'] is not None:
             masternode_payout = share_data['payee_amount']
+            PAYEE_SCRIPT =bitcoin_data.pubkey_hash_to_script2(share_data['payee'])
         else:
 			masternode_payout = 0
         
