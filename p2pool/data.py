@@ -225,7 +225,7 @@ class Share(object):
         print ' sum_validation (result %s)' % (sum(amounts.itervalues()) != users_subsidy)
 
         for ax in amounts:
-        print (ax,':',amounts[ax])
+           print (ax,':',amounts[ax])
 
         if (sum(amounts.itervalues()) != users_subsidy) or any(x < 0 for x in amounts.itervalues()):
              raise ValueError()
