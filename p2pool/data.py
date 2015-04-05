@@ -219,8 +219,7 @@ class Share(object):
 
         print 'sum amounts (amounts %s)' % (sum(amounts.itervalues()))
         print 'users_subsidy (users_subsidy %s)' % (users_subsidy)
-        print 'share_data['subsidy'] (share_data['subsidy'] %s)' % (share_data['subsidy'])
-             
+                     
         if sum(amounts.itervalues()) != users_subsidy or any(x < 0 for x in amounts.itervalues()):
             raise ValueError()
         
