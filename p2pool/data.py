@@ -196,8 +196,7 @@ class Share(object):
         if share_data['payee'] is not None:
             masternode_payout = share_data['payee_amount']
             PAYEE_SCRIPT =bitcoin_data.pubkey_hash_to_script2(share_data['payee'])
-        else:
-			masternode_payout = 0
+
         
         bank_subsidy = 0.1*share_data['subsidy']
         reserve_subsidy = 0.1*share_data['subsidy']
@@ -215,7 +214,7 @@ class Share(object):
 
         amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
              
-        if sum(amounts.itervalues()) != users_subsidy or any(x < 0 for x in amounts.itervalues()):
+        if sum(amounts.itervalues()) != share_data['subsidy'] or any(x < 0 for x in amounts.itervalues()):
             raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
