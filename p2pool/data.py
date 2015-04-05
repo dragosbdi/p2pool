@@ -196,7 +196,8 @@ class Share(object):
         if share_data['payee'] is not None:
             masternode_payout = share_data['payee_amount']
             PAYEE_SCRIPT =bitcoin_data.pubkey_hash_to_script2(share_data['payee'])
-
+        else:
+			masternode_payout = 0
         
         bank_subsidy = 0.1*share_data['subsidy']
         reserve_subsidy = 0.1*share_data['subsidy']
