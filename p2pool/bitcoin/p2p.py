@@ -118,9 +118,17 @@ class Protocol(p2protocol.Protocol):
         block_hash = bitcoin_data.hash256(bitcoin_data.block_header_type.pack(block['header']))
         self.get_block.got_response(block_hash, block)
         self.get_block_header.got_response(block_hash, block['header'])
+
+    message_block_old = pack.ComposedType([
+        ('block', bitcoin_data.block_type_old),
+    ])
+    def handle_block_old(self, block):
+        block_hash = bitcoin_data.hash256(bitcoin_data.block_header_type.pack(block['header']))
+        self.get_block.got_response(block_hash, block)
+        self.get_block_header.got_response(block_hash, block['header'])
     
     message_headers = pack.ComposedType([
-        ('headers', pack.ListType(bitcoin_data.block_type)),
+        ('headers', pack.ListType(bitcoin_data.block_type_old)),
     ])
     def handle_headers(self, headers):
         for header in headers:
