@@ -196,11 +196,13 @@ class Share(object):
 
         if share_data['payee'] is not None:
             masternode_payout = share_data['payee_amount']
+		else
+			masternode_payout = 0
         
         bank_subsidy = 0.1*share_data['subsidy']
         reserve_subsidy = 0.1*share_data['subsidy']
-        users_subsidy = share_data['subsidy'] - bank_subsidy - reserve_subsidy 
-		users_subsidy -= masternode_payout
+        users_subsidy = share_data['subsidy'] - bank_subsidy - reserve_subsidy - masternode_payout
+	 
         
         amounts = dict((script, users_subsidy*(199*weight)//(200*total_weight)) for script, weight in weights.iteritems()) # 99.5% goes according to weights prior to this share
         this_script = bitcoin_data.pubkey_hash_to_script2(share_data['pubkey_hash'])
