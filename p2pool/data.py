@@ -196,7 +196,7 @@ class Share(object):
 
         if share_data['payee'] is not None:
             masternode_payout = share_data['payee_amount']
-        else
+        else:
 			masternode_payout = 0
         
         bank_subsidy = 0.1*share_data['subsidy']
@@ -221,7 +221,7 @@ class Share(object):
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
 	if share_data['payee'] is not None:
 		dests = sorted(amounts.iterkeys(), key=lambda script: (script != DONATION_SCRIPT, script == this_script, script == BANK_SCRIPT, script == RESERVE_SCRIPT, script == PAYEE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
-	else
+	else:
         dests = sorted(amounts.iterkeys(), key=lambda script: (script != DONATION_SCRIPT, script == this_script, script == BANK_SCRIPT, script == RESERVE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
         
         share_info = dict(
