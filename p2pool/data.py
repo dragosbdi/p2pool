@@ -211,7 +211,7 @@ class Share(object):
         amounts[RESERVE_SCRIPT] = amounts.get(RESERVE_SCRIPT, 0) + reserve_subsidy
 
         if share_data['payee'] is not None:
-        amounts[PAYEE_SCRIPT] = amounts.get(PAYEE_SCRIPT, 0) + masternode_payout
+            amounts[PAYEE_SCRIPT] = amounts.get(PAYEE_SCRIPT, 0) + masternode_payout
 
         amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
              
