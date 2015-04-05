@@ -19,7 +19,7 @@ def check(bitcoind, net):
 
 @deferral.retry('Error getting work from bitcoind:', 3)
 @defer.inlineCallbacks
-def getwork(bitcoind, net, use_getblocktemplate=True):
+def getwork(bitcoind, net, use_getblocktemplate=False):
     def go():
         if use_getblocktemplate:
             return bitcoind.rpc_getblocktemplate(dict(mode='template'))
