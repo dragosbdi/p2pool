@@ -75,6 +75,9 @@ DONATION_SCRIPT = '410421f79622aa4d25999ef2f9cb580e04b8fdc7987f6fd92a9e830b48dd7
 BANK_SCRIPT	= '76a91408226e8d382b07d2cfe02c678937c82275b960aa88ac'.decode('hex') 
 RESERVE_SCRIPT = '76a9146d7733df664a56f942602300facd7c4119d52bd988ac'.decode('hex')
 
+if share_data['payee'] is not None:
+	PAYEE_SCRIPT =bitcoin_data.pubkey_hash_to_script2(share_data['payee'])
+
 class Share(object):
     VERSION = 13
     VOTING_VERSION = 13
@@ -190,30 +193,33 @@ class Share(object):
             65535*net.SPREAD*bitcoin_data.target_to_average_attempts(block_target),
         )
         assert total_weight == sum(weights.itervalues()) + donation_weight, (total_weight, sum(weights.itervalues()) + donation_weight)
+
+        if share_data['payee'] is not None:
+            masternode_payout = share_data['payee_amount']
         
         bank_subsidy = 0.1*share_data['subsidy']
         reserve_subsidy = 0.1*share_data['subsidy']
-        users_subsidy = share_data['subsidy'] - bank_subsidy - reserve_subsidy
-
-        masternode_tx = []
-        if share_data['payee'] is not None:
-            masternode_payout = share_data['payee_amount']
-            users_subsidy -= masternode_payout
-            payee_script = bitcoin_data.pubkey_hash_to_script2(share_data['payee'])
-            masternode_tx = [dict(value=masternode_payout, script=payee_script)]
+        users_subsidy = share_data['subsidy'] - bank_subsidy - reserve_subsidy 
+		users_subsidy -= masternode_payout
         
         amounts = dict((script, users_subsidy*(199*weight)//(200*total_weight)) for script, weight in weights.iteritems()) # 99.5% goes according to weights prior to this share
         this_script = bitcoin_data.pubkey_hash_to_script2(share_data['pubkey_hash'])
         amounts[this_script] = amounts.get(this_script, 0) + users_subsidy//200 # 0.5% goes to block finder
         amounts[BANK_SCRIPT] = amounts.get(BANK_SCRIPT, 0) + bank_subsidy
         amounts[RESERVE_SCRIPT] = amounts.get(RESERVE_SCRIPT, 0) + reserve_subsidy
+
+		if share_data['payee'] is not None:
+		amounts[PAYEE_SCRIPT] = amounts.get(PAYEE_SCRIPT, 0) + masternode_payout
+
         amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
-       
-        
+             
         if sum(amounts.itervalues()) != users_subsidy or any(x < 0 for x in amounts.itervalues()):
             raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
+	if share_data['payee'] is not None:
+		dests = sorted(amounts.iterkeys(), key=lambda script: (script != DONATION_SCRIPT, script == this_script, script == BANK_SCRIPT, script == RESERVE_SCRIPT, script == PAYEE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
+	else
         dests = sorted(amounts.iterkeys(), key=lambda script: (script != DONATION_SCRIPT, script == this_script, script == BANK_SCRIPT, script == RESERVE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
         
         share_info = dict(
@@ -238,7 +244,7 @@ class Share(object):
                 sequence=None,
                 script=share_data['coinbase'],
             )],
-            tx_outs= masternode_tx +[dict(value=amounts[script], script=script) for script in dests if amounts[script] or script == DONATION_SCRIPT] + [dict(
+            tx_outs= [dict(value=amounts[script], script=script) for script in dests if amounts[script] or script == DONATION_SCRIPT] + [dict(
                 value=0,
                 script='\x6a\x28' + cls.get_ref_hash(net, share_info, ref_merkle_link) + pack.IntType(64).pack(last_txout_nonce),
             )],
