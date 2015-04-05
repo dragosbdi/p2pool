@@ -210,8 +210,8 @@ class Share(object):
         amounts[BANK_SCRIPT] = amounts.get(BANK_SCRIPT, 0) + bank_subsidy
         amounts[RESERVE_SCRIPT] = amounts.get(RESERVE_SCRIPT, 0) + reserve_subsidy
 
-		if share_data['payee'] is not None:
-		amounts[PAYEE_SCRIPT] = amounts.get(PAYEE_SCRIPT, 0) + masternode_payout
+        if share_data['payee'] is not None:
+        amounts[PAYEE_SCRIPT] = amounts.get(PAYEE_SCRIPT, 0) + masternode_payout
 
         amounts[DONATION_SCRIPT] = amounts.get(DONATION_SCRIPT, 0) + users_subsidy - sum(amounts.itervalues()) # all that's left over is the donation weight and some extra satoshis due to rounding
              
@@ -219,9 +219,9 @@ class Share(object):
             raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
-	if share_data['payee'] is not None:
+        if share_data['payee'] is not None:
 		dests = sorted(amounts.iterkeys(), key=lambda script: (script != DONATION_SCRIPT, script == this_script, script == BANK_SCRIPT, script == RESERVE_SCRIPT, script == PAYEE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
-	else:
+        else:
         dests = sorted(amounts.iterkeys(), key=lambda script: (script != DONATION_SCRIPT, script == this_script, script == BANK_SCRIPT, script == RESERVE_SCRIPT, amounts[script], script), reverse=True)[:4000] # block length limit, unlikely to ever be hit
         
         share_info = dict(
