@@ -196,7 +196,7 @@ class Share(object):
 
         if share_data['payee'] is not None:
             masternode_payout = share_data['payee_amount']
-		else
+        else
 			masternode_payout = 0
         
         bank_subsidy = 0.1*share_data['subsidy']
