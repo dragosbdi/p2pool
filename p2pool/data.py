@@ -199,8 +199,8 @@ class Share(object):
         else:
 			masternode_payout = 0
         
-        bank_subsidy = 0.1*share_data['subsidy']
-        reserve_subsidy = 0.1*share_data['subsidy']
+        bank_subsidy = (share_data['subsidy']+9)/10
+        reserve_subsidy = (share_data['subsidy']+9)/10
         
         if share_data['payee'] is not None:        
             users_subsidy = share_data['subsidy'] - bank_subsidy - reserve_subsidy - masternode_payout
@@ -224,14 +224,9 @@ class Share(object):
         print ' amount (amount %s)' % any(x < 0 for x in amounts.itervalues())
         print ' sum_validation (result %s)' % (sum(amounts.itervalues()) != users_subsidy)
 
-        for ax in amounts:
-           print (ax,':',amounts[ax])
-           
-        for ax in amounts:
-           amounts[ax] = int(amounts[ax])
-
-        #if (sum(amounts.itervalues()) != share_data['subsidy']) or any(x < 0 for x in amounts.itervalues()):
-        #     raise ValueError()
+        
+        if (sum(amounts.itervalues()) != share_data['subsidy']) or any(x < 0 for x in amounts.itervalues()):
+             raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
         if share_data['payee'] is not None:
