@@ -226,9 +226,12 @@ class Share(object):
 
         for ax in amounts:
            print (ax,':',amounts[ax])
+           
+        for ax in amounts:
+           amounts[ax] = int(amounts[ax])
 
-        if (sum(amounts.itervalues()) != share_data['subsidy']) or any(x < 0 for x in amounts.itervalues()):
-             raise ValueError()
+        #if (sum(amounts.itervalues()) != share_data['subsidy']) or any(x < 0 for x in amounts.itervalues()):
+        #     raise ValueError()
         
         #sort outputs; DONATION_SCRIPT, BANK_SCRIPT and RESERVE_SCRIPT first; after that decreasing amounts
         if share_data['payee'] is not None:
