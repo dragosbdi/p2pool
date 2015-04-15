@@ -332,7 +332,7 @@ class WorkerBridge(worker_interface.WorkerBridge):
                 known_txs=tx_map,
                 base_subsidy=self.node.net.PARENT.SUBSIDY_FUNC(self.current_work.value['height']),
             )
-        
+        print ('GENTX',gentx)
         packed_gentx = bitcoin_data.tx_type.pack(gentx)
         other_transactions = [tx_map[tx_hash] for tx_hash in other_transaction_hashes]
         

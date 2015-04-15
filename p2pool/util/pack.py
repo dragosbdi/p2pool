@@ -76,7 +76,8 @@ class Type(object):
         
         if p2pool.DEBUG:
             if self._unpack(data) != obj:
-                raise AssertionError((self._unpack(data), obj))
+		
+                raise AssertionError(('Unpack Data\n-----\n',self._unpack(data),'Data\n-----\n', data,'Obj\n-----\n', obj))
         
         return data
     

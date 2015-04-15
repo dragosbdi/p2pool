@@ -20,9 +20,9 @@ POW_FUNC = data.hash256momentum
 BLOCK_PERIOD = 60 # s
 SYMBOL = 'BCR'
 CONF_FILE_FUNC = lambda: os.path.join(os.path.join(os.environ['APPDATA'], 'Bitcredit') if platform.system() == 'Windows' else os.path.expanduser('~/Library/Application Support/Bitcredit/') if platform.system() == 'Darwin' else os.path.expanduser('~/.bitcredit'), 'bitcredit.conf')
-BLOCK_EXPLORER_URL_PREFIX = 'http://bitexp.net/block.php?coin=Bitcredits&hash='
-ADDRESS_EXPLORER_URL_PREFIX = 'http://bitexp.net/address.php?coin=Bitcredits&address='
-TX_EXPLORER_URL_PREFIX = 'http://bitexp.net/tx.php?coin=Bitcredits&tx='
+BLOCK_EXPLORER_URL_PREFIX = 'https://chainz.cryptoid.info/bcr/block.dws?'
+ADDRESS_EXPLORER_URL_PREFIX = 'https://chainz.cryptoid.info/bcr/address.dws?'
+TX_EXPLORER_URL_PREFIX = 'https://chainz.cryptoid.info/bcr/tx.dws?'
 SANE_TARGET_RANGE = (2**256//2**7//1000000000 - 1, 2**256//2**7 - 1)
 DUMB_SCRYPT_DIFF = 1
 DUST_THRESHOLD = 1e8

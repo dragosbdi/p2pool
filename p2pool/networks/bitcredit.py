@@ -17,9 +17,9 @@ PREFIX = 'ba0c05e7ad100301'.decode('hex')
 P2P_PORT = 8777
 MIN_TARGET = 0
 MAX_TARGET = 2**256//2**7 - 1
-PERSIST = True
+PERSIST = False
 WORKER_PORT = 8776
 BOOTSTRAP_ADDRS = ''.split(' ')
 ANNOUNCE_CHANNEL = '#p2pool-bcr'
-VERSION_CHECK = lambda v: 301700 <= v
-VERSION_WARNING = lambda v: 'Upgrade Bitcredit to >=0.30.17!' if v < 301700 else None
+VERSION_CHECK = lambda v: 301600 <= v
+VERSION_WARNING = lambda v: 'Upgrade Bitcredit to >=0.30.16!' if v < 301600 else None
