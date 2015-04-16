@@ -199,8 +199,8 @@ class Share(object):
         else:
 			masternode_payout = 0
         
-        bank_subsidy = 0.1*share_data['subsidy']
-        reserve_subsidy = 0.1*share_data['subsidy']
+        bank_subsidy = (share_data['subsidy']+9)//10
+        reserve_subsidy = (share_data['subsidy']+9)//10
         
         if share_data['payee'] is not None:        
             users_subsidy = share_data['subsidy'] - bank_subsidy - reserve_subsidy - masternode_payout
